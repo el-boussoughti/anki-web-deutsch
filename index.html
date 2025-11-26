@@ -98,6 +98,13 @@
           </div>
         </div>
 
+        <input 
+  type="text" 
+  id="ngrokLink" 
+  value="https://c4ebd7532029.ngrok-free.app"
+  class="mobile-ngrok"
+/>
+
         <button type="submit">Add Card</button>
         <button
           type="button"
@@ -106,13 +113,17 @@
         >
           Clear Fields
         </button>
+        <button type="button" id="toggleNgrok" class="mobile-only">
+          Show / Hide Ngrok Link
+        </button>
       </form>
 
       <div id="status"></div>
     </div>
 
-   <!-- hidden input for ngrok -->
-<input type="hidden" id="ngrokLink" value="https://c4ebd7532029.ngrok-free.app" />
+
+
+
 
 <script>
   const form = document.getElementById("noteForm");
@@ -189,13 +200,20 @@
       statusEl.classList.add("error", "show");
     }
   };
+
+
+  // toggle show/hide ngrok field on mobile
+document.getElementById("toggleNgrok").onclick = () => {
+  const ngrokInput = document.getElementById("ngrokLink");
+  if (ngrokInput.style.display === "none" || ngrokInput.style.display === "") {
+    ngrokInput.style.display = "block";
+  } else {
+    ngrokInput.style.display = "none";
+  }
+};
+
 </script>
 
 
   </body>
 </html>
-
-
-
-
-
