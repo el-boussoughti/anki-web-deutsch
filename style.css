@@ -160,7 +160,7 @@ button:active {
 }
 
 /* Mobile Adjustments */
-@media screen and (max-width: 380px) {
+@media screen and (max-width: 480px) {
   .container {
     padding: 16px;
   }
@@ -190,5 +190,6 @@ button:active {
   }
   
 }
+
 
 
