@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Anki Web Creator</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Add Anki Card</h1>
+
+      <form id="noteForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Deck Name:</label>
+            <input
+              type="text"
+              name="deck"
+              value="Deutscher Wortschatz"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Model Name:</label>
+            <input type="text" name="model" value="Wortschatz" required />
+          </div>
+
+          <div class="form-group">
+            <label>Word Type:</label>
+            <select name="TYPE">
+              <option value="Nomen">Nomen</option>
+              <option value="Verb">Verb</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Artikel:</label>
+            <!-- <input type="text" name="ARTK"> -->
+            <select name="ARTK">
+              <option value="">none</option>
+              <option value="der">der</option>
+              <option value="die">die</option>
+              <option value="das">das</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>German Word (DE):</label>
+            <input type="text" name="DE" />
+          </div>
+
+          <div class="form-group">
+            <label>Plural (PL):</label>
+            <input type="text" name="PL" />
+          </div>
+
+          <div class="form-group">
+            <label>Präteritum:</label>
+            <input type="text" name="PRATERITUM" />
+          </div>
+
+          <div class="form-group">
+            <label>Partizip II:</label>
+            <input type="text" name="PARTIZIP2" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Arabic Translation:</label>
+            <textarea name="AR" dir="rtl"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>German Sentence:</label>
+            <textarea name="SENTENCE_DE"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Arabic Sentence:</label>
+            <textarea name="SENTENCE_AR" dir="rtl"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Notes:</label>
+            <textarea name="NOTE" dir="rtl"></textarea>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tags:</label>
+            <input type="text" name="TAGS" />
+          </div>
+        </div>
+
+        <button type="submit">Add Card</button>
+        <button
+          type="button"
+          id="clearBtn"
+          style="margin-top: 10px; background: #475569"
+        >
+          Clear Fields
+        </button>
+      </form>
+
+      <div id="status"></div>
+    </div>
+
+    <script>
+  const form = document.getElementById("noteForm");
+
+  const typeField = form.querySelector('[name="TYPE"]');
+  const artikelField = form.querySelector('[name="ARTK"]');
+  const pluralField = form.querySelector('[name="PL"]');
+  const pratField = form.querySelector('[name="PRATERITUM"]');
+  const part2Field = form.querySelector('[name="PARTIZIP2"]');
+
+  const statusEl = document.getElementById("status");
+
+
+  function updateFieldStates() {
+    const isVerb = typeField.value === "Verb";
+
+
+    pratField.disabled = !isVerb;
+    part2Field.disabled = !isVerb;
+
+
+    artikelField.disabled = isVerb;
+    pluralField.disabled = isVerb;
+  }
+
+
+  updateFieldStates();
+
+
+  typeField.addEventListener("change", () => {
+    clearFields(false);
+    updateFieldStates();
+  });
+
+
+  function clearFields(full = true) {
+    const inputs = form.querySelectorAll("input, textarea, select");
+
+    inputs.forEach((el) => {
+      if (el.name === "deck" || el.name === "model") return;
+      if (!full && el.name === "TYPE") return; // عند تغيير TYPE لا نعيد TYPE نفسه
+
+      if (el.tagName === "SELECT") {
+        el.selectedIndex = 0;
+      } else {
+        el.value = "";
+      }
+    });
+
+    statusEl.innerText = "";
+    statusEl.classList.remove("show", "success", "error");
+  }
+
+
+  document.getElementById("clearBtn").onclick = () => {
+    clearFields(true);
+    updateFieldStates();
+  };
+
+
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    ["ARTK", "PL", "PRATERITUM", "PARTIZIP2"].forEach((name) => {
+      const field = form.querySelector(`[name="${name}"]`);
+      if (field && field.disabled) formData.set(name, "");
+    });
+
+    const response = await fetch("/add-note", {
+      method: "POST",
+      body: formData,
+    });
+
+    const result = await response.json();
+
+    statusEl.innerText = result.message;
+    statusEl.classList.remove("success", "error");
+    statusEl.classList.add(result.success ? "success" : "error", "show");
+  };
+</script>
+
+  </body>
+</html>
