@@ -148,13 +148,46 @@ button:active {
   color: #fca5a5;
 }
 
+
+/* Hide on desktop */
+.mobile-ngrok {
+  display: none;
+}
+
+/* Mobile only button */
+.mobile-only {
+  display: none;
+}
+
 /* Mobile Adjustments */
-@media (max-width: 600px) {
+@media (max-width: 900px) {
   .container {
     padding: 16px;
+  }
+
+    .form-row {
+    grid-template-columns: 1fr !important;
   }
 
   h1 {
     font-size: 20px;
   }
+  
+  .mobile-ngrok {
+    display: block;
+    margin-top: 10px;
+  }
+  
+  .mobile-only {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #1e293b;
+    color: #fff;
+    border: 1px solid #334155;
+    border-radius: 6px;
+  }
+  
 }
+
