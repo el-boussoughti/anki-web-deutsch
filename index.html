@@ -180,10 +180,11 @@
       if (field && field.disabled) formData.set(name, "");
     });
 
-    const response = await fetch("/add-note", {
+    const response = await fetch("http://192.168.1.3:5000/add-note", {
       method: "POST",
-      body: formData,
+      body: formData
     });
+
 
     const result = await response.json();
 
@@ -195,4 +196,5 @@
 
   </body>
 </html>
+
 
